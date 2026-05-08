@@ -201,6 +201,12 @@ button {
   padding-bottom: 0.08em;
 }
 
+@media (max-width: 768px) {
+  .line-reveal {
+    overflow: visible;
+  }
+}
+
 .line-reveal__inner {
   display: block;
   transform: translateY(105%);
@@ -251,7 +257,7 @@ button {
   font-style: italic;
   color: var(--text);
   letter-spacing: -0.02em;
-  min-width: 200px;
+  min-width: clamp(140px, 35vw, 200px);
 }
 
 .preloader__curve {
@@ -286,6 +292,12 @@ button {
   border-radius: 16px;
   transition: transform 0.5s var(--ease-out-expo),
               opacity 0.5s var(--ease-out-expo);
+}
+
+@media (max-width: 768px) {
+  .nav {
+    padding: 0 20px;
+  }
 }
 
 .nav.hidden {
