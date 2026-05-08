@@ -14,6 +14,15 @@ const projects = [
     tags: ['Next.js', 'GSAP', 'Framer Motion', 'Dark Luxury'],
   },
   {
+    name: '7 Fit Gym',
+    url: 'https://7fitgym.vercel.app',
+    domain: '7fitgym.vercel.app',
+    image: '/project-7fit.png',
+    description: 'A high-energy fitness brand site for Ranchi\'s premium gym. Bold neon-on-black aesthetic with program showcases, coach profiles, and free trial conversions.',
+    year: '2026',
+    tags: ['Next.js', 'Bold UI', 'Fitness Branding', 'Responsive'],
+  },
+  {
     name: 'Lumière by Niyati',
     url: 'https://lumiereniyati.vercel.app',
     domain: 'lumiereniyati.vercel.app',
