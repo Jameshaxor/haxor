@@ -61,12 +61,12 @@ export default function Hero() {
             <span className="accent">Manu Kumar Nayak</span> — turning caffeine into pixel-perfect,
             scroll-stopping web experiences that nobody mistakes for a template.
           </p>
-        </div>
-      </div>
 
-      <div className={`hero__scroll-indicator reveal ${visible ? 'visible' : ''}`} style={{ transitionDelay: '700ms' }}>
-        <span>scroll</span>
-        <div className="hero__scroll-indicator__arrow" />
+          <div className={`hero__scroll-indicator reveal ${visible ? 'visible' : ''}`} style={{ transitionDelay: '700ms' }}>
+            <span>scroll</span>
+            <div className="hero__scroll-indicator__arrow" />
+          </div>
+        </div>
       </div>
     </section>
   );

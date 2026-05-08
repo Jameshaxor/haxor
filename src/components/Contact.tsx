@@ -1,21 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import emailjs from '@emailjs/browser';
 
 export default function Contact() {
   const { ref: sectionRef, isVisible } = useScrollReveal(0.15);
-  const [formState, setFormState] = useState({ name: '', email: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Portfolio Inquiry from ${formState.name}`);
-    const body = encodeURIComponent(`Name: ${formState.name}\nEmail: ${formState.email}\n\n${formState.message}`);
-    window.open(`mailto:Manuhaxr@gmail.com?subject=${subject}&body=${body}`);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
+    if (!formRef.current) return;
+
+    setStatus('sending');
+
+    try {
+      await emailjs.sendForm(
+        'service_portfolio',   // EmailJS Service ID — user needs to replace
+        'template_contact',    // EmailJS Template ID — user needs to replace
+        formRef.current,
+        'YOUR_PUBLIC_KEY'      // EmailJS Public Key — user needs to replace
+      );
+      setStatus('sent');
+      formRef.current.reset();
+      setTimeout(() => setStatus('idle'), 4000);
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 4000);
+    }
   };
+
+  const buttonLabel = {
+    idle: 'Send Message →',
+    sending: 'Sending...',
+    sent: 'Sent ✓',
+    error: 'Failed — Try Again',
+  }[status];
 
   return (
     <section className="contact section" id="contact" ref={sectionRef}>
@@ -37,26 +58,31 @@ export default function Contact() {
           </span>
         </h2>
 
-        {/* Contact Form */}
-        <form className={`contact__form reveal ${isVisible ? 'visible' : ''}`} style={{ transitionDelay: '400ms' }} onSubmit={handleSubmit}>
+        {/* Contact Form — EmailJS */}
+        <form
+          ref={formRef}
+          className={`contact__form reveal ${isVisible ? 'visible' : ''}`}
+          style={{ transitionDelay: '400ms' }}
+          onSubmit={handleSubmit}
+        >
           <div className="contact__form-row">
             <div className="contact__form-group">
               <label htmlFor="contact-name" className="contact__form-label">Name</label>
-              <input id="contact-name" type="text" className="contact__form-input" placeholder="Your name" required value={formState.name} onChange={(e) => setFormState({ ...formState, name: e.target.value })} />
+              <input id="contact-name" name="from_name" type="text" className="contact__form-input" placeholder="Your name" required />
             </div>
             <div className="contact__form-group">
               <label htmlFor="contact-email" className="contact__form-label">Email</label>
-              <input id="contact-email" type="email" className="contact__form-input" placeholder="your@email.com" required value={formState.email} onChange={(e) => setFormState({ ...formState, email: e.target.value })} />
+              <input id="contact-email" name="from_email" type="email" className="contact__form-input" placeholder="your@email.com" required />
             </div>
           </div>
 
           <div className="contact__form-group">
             <label htmlFor="contact-message" className="contact__form-label">Message</label>
-            <textarea id="contact-message" className="contact__form-textarea" placeholder="Tell me about your project..." rows={5} required value={formState.message} onChange={(e) => setFormState({ ...formState, message: e.target.value })} />
+            <textarea id="contact-message" name="message" className="contact__form-textarea" placeholder="Tell me about your project..." rows={5} required />
           </div>
 
-          <button type="submit" className="contact__submit-btn">
-            {submitted ? 'Sent ✓' : 'Send Message →'}
+          <button type="submit" className="contact__submit-btn" disabled={status === 'sending'}>
+            {buttonLabel}
           </button>
         </form>
 
